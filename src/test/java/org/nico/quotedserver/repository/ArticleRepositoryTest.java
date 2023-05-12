@@ -15,6 +15,7 @@ import org.springframework.test.context.TestPropertySource;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -42,7 +43,7 @@ class ArticleRepositoryTest {
 
     @AfterEach
     void tearDown() {
-        articleRepository.readAll().forEach(articleRepository::delete);
+        articleRepository.deleteAll(articleRepository.findAll());
     }
 
     @Test
@@ -54,54 +55,60 @@ class ArticleRepositoryTest {
 
     @Test
     void create() {
-        articleRepository.create(article);
+        articleRepository.save(article);
 
-        assertEquals(article, articleRepository.readById(article.getId()).get());
+        assertEquals(article, articleRepository.findById(article.getId()).get());
     }
 
     @Test
     void readById() {
-        assertEquals(Optional.empty(), articleRepository.readById(1L));
+        assertEquals(Optional.empty(), articleRepository.findById(1L));
     }
 
     @Test
     void readAll() {
-        assertEquals(0, articleRepository.readAll().size());
+        assertEquals(0, countArticles());
 
         int count = 10;
         for (int i = 0; i < count; i++) {
             article = new Article("Test article", "Test article");
-            articleRepository.create(article);
+            articleRepository.save(article);
         }
 
-        assertEquals(count, articleRepository.readAll().size());
+        assertEquals(count, countArticles());
+    }
+
+    private int countArticles() {
+        AtomicInteger count = new AtomicInteger();
+        articleRepository.findAll().forEach(article -> count.getAndIncrement());
+        return count.get();
     }
 
     @Test
     void update() {
-        articleRepository.create(article);
+        articleRepository.save(article);
 
         String newTitle = "New title";
         article.setTitle(newTitle);
-        articleRepository.update(article);
+        articleRepository.save(article);
 
-        assertEquals(newTitle, articleRepository.readById(article.getId()).get().getTitle());
+        assertEquals(newTitle, articleRepository.findById(article.getId()).get().getTitle());
     }
 
     @Test
     void delete() {
-        articleRepository.create(article);
+        articleRepository.save(article);
 
         articleRepository.delete(article);
 
-        assertEquals(Optional.empty(), articleRepository.readById(article.getId()));
+        assertEquals(Optional.empty(), articleRepository.findById(article.getId()));
     }
 
     @Test
     void testLastVisited() {
-        articleRepository.create(article);
+        articleRepository.save(article);
 
-        assertEquals(article.getLastVisited(), articleRepository.readById(article.getId()).get().getLastVisited());
+        assertEquals(article.getLastVisited(), articleRepository.findById(article.getId()).get().getLastVisited());
 
         LocalDate today = LocalDate.now();
         LocalDate lastVisited = article.getLastVisited().toLocalDateTime().toLocalDate();
