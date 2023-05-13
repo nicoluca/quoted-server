@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.nico.quotedserver.domain.Article;
+import org.nico.quotedserver.util.TestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -15,7 +16,6 @@ import org.springframework.test.context.TestPropertySource;
 
 import java.time.LocalDate;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ArticleRepositoryTest {
 
     @Autowired
-    private TestEntityManager entityManager;
+    private TestEntityManager entityManager; // TODO Is this necessary?
 
     @Autowired // Variable injection is not recommended, but it's fine for testing?
     private ArticleRepository articleRepository;
@@ -67,7 +67,7 @@ class ArticleRepositoryTest {
 
     @Test
     void readAll() {
-        assertEquals(0, countArticles());
+        assertEquals(0, TestUtil.countIterable(articleRepository.findAll()));
 
         int count = 10;
         for (int i = 0; i < count; i++) {
@@ -75,13 +75,7 @@ class ArticleRepositoryTest {
             articleRepository.save(article);
         }
 
-        assertEquals(count, countArticles());
-    }
-
-    private int countArticles() {
-        AtomicInteger count = new AtomicInteger();
-        articleRepository.findAll().forEach(article -> count.getAndIncrement());
-        return count.get();
+        assertEquals(count, TestUtil.countIterable(articleRepository.findAll()));
     }
 
     @Test
