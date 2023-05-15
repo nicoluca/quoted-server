@@ -1,7 +1,10 @@
 package org.nico.quotedserver.domain;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Set;
 
@@ -11,7 +14,7 @@ import java.util.Set;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED) // JOINED to to have a dedicated source table, TABLE_PER_CLASS to have a table per subclass
 @DiscriminatorColumn(name="source_type")
-abstract class Source {
+public abstract class Source {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)

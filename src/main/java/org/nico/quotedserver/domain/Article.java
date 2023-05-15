@@ -3,9 +3,10 @@ package org.nico.quotedserver.domain;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.sql.Timestamp;
 
@@ -59,5 +60,10 @@ public class Article extends Source {
     @Override
     public String getOrigin() {
         return this.url;
+    }
+
+    // Return class name without package name
+    public static String getClassName() {
+        return Article.class.getSimpleName();
     }
 }

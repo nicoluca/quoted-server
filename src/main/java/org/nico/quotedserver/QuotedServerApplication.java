@@ -1,6 +1,5 @@
 package org.nico.quotedserver;
 
-import org.nico.quotedserver.repository.ArticleRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
