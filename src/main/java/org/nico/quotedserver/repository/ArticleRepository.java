@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ArticleRepository extends CrudRepository<Article, Long> {
-    // TODO Do we need JPARepository or CrudRepository is enough?
+    // Together with Spring Rest Starter, will automatically create a REST API for us
+    // Endpoint defaults to /articles
 }
