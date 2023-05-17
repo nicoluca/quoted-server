@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 
 @NoArgsConstructor // Needed for JPA
 @Getter @Setter
+
 @Entity
 @DiscriminatorValue("article")
 public class Article extends Source {
@@ -58,7 +59,7 @@ public class Article extends Source {
     }
 
     @Override
-    public String getOrigin() {
+    public String originToString() {
         return this.url;
     }
 

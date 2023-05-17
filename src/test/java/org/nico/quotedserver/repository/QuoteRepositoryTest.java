@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import org.nico.quotedserver.domain.*;
 
-import org.nico.quotedserver.util.TestUtil;
+import org.nico.quotedserver.util.TestUtilTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -69,7 +69,7 @@ class QuoteRepositoryTest {
         quoteRepository.save(quote);
 
         assertEquals(quote, quoteRepository.findById(quote.getId()).get());
-        assertEquals(1, TestUtil.countIterable(quoteRepository.findAll()));
+        assertEquals(1, TestUtilTest.countIterable(quoteRepository.findAll()));
     }
 
     @Test
@@ -81,7 +81,7 @@ class QuoteRepositoryTest {
         quoteRepository.save(quote);
         assertThrows(InvalidDataAccessApiUsageException.class, () -> quoteRepository.findAll()); // TODO unclear why this is only thrown when findAll() is called
         quoteRepository.delete(quote);
-        assertEquals(0, TestUtil.countIterable(quoteRepository.findAll()));
+        assertEquals(0, TestUtilTest.countIterable(quoteRepository.findAll()));
     }
 
     @Test
@@ -99,7 +99,7 @@ class QuoteRepositoryTest {
         quoteRepository.save(quote2);
         quoteRepository.save(quote3);
 
-        assertEquals(3, TestUtil.countIterable(quoteRepository.findAll()));
+        assertEquals(3, TestUtilTest.countIterable(quoteRepository.findAll()));
     }
 
     @Test
@@ -150,6 +150,6 @@ class QuoteRepositoryTest {
         Instant end = Instant.now();
         Duration duration = Duration.between(start, end);
         assertTrue(duration.toMillis() < 1000);
-        assertEquals(1000, TestUtil.countIterable(quoteRepository.findAll()));
+        assertEquals(1000, TestUtilTest.countIterable(quoteRepository.findAll()));
     }
 }

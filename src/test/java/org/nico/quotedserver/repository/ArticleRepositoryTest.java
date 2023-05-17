@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.nico.quotedserver.domain.Article;
-import org.nico.quotedserver.util.TestUtil;
+import org.nico.quotedserver.util.TestUtilTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -67,7 +67,7 @@ class ArticleRepositoryTest {
 
     @Test
     void readAll() {
-        assertEquals(0, TestUtil.countIterable(articleRepository.findAll()));
+        assertEquals(0, TestUtilTest.countIterable(articleRepository.findAll()));
 
         int count = 10;
         for (int i = 0; i < count; i++) {
@@ -75,7 +75,7 @@ class ArticleRepositoryTest {
             articleRepository.save(article);
         }
 
-        assertEquals(count, TestUtil.countIterable(articleRepository.findAll()));
+        assertEquals(count, TestUtilTest.countIterable(articleRepository.findAll()));
     }
 
     @Test

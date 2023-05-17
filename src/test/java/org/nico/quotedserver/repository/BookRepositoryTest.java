@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.nico.quotedserver.domain.Author;
 import org.nico.quotedserver.domain.Book;
-import org.nico.quotedserver.util.TestUtil;
+import org.nico.quotedserver.util.TestUtilTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -62,7 +62,7 @@ class BookRepositoryTest {
 
     @Test
     void readAll() {
-        assertEquals(0, TestUtil.countIterable(bookRepository.findAll()));
+        assertEquals(0, TestUtilTest.countIterable(bookRepository.findAll()));
 
         int count = 10;
         IntStream.range(0, count).forEach(i -> {
@@ -70,7 +70,7 @@ class BookRepositoryTest {
             bookRepository.save(book);
         });
 
-        assertEquals(count, TestUtil.countIterable(bookRepository.findAll()));
+        assertEquals(count, TestUtilTest.countIterable(bookRepository.findAll()));
     }
 
     @Test
@@ -93,6 +93,6 @@ class BookRepositoryTest {
         bookRepository.delete(book);
 
         assertEquals(Optional.empty(), bookRepository.findById(book.getId()));
-        assertEquals(0, TestUtil.countIterable(bookRepository.findAll()));
+        assertEquals(0, TestUtilTest.countIterable(bookRepository.findAll()));
     }
 }

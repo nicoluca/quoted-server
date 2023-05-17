@@ -4,11 +4,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.nico.quotedserver.domain.Author;
-import org.nico.quotedserver.util.TestUtil;
+import org.nico.quotedserver.util.TestUtilTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.TestPropertySource;
@@ -41,7 +40,7 @@ class AuthorRepositoryTest {
 
         // Assert if author is in database
         assertEquals(authorRepository.findById(author.getId()).get(), author);
-        assertEquals(2, TestUtil.countIterable(authorRepository.findAll()));
+        assertEquals(2, TestUtilTest.countIterable(authorRepository.findAll()));
     }
 
     @Test
@@ -62,7 +61,7 @@ class AuthorRepositoryTest {
         Author author2 = new Author("Neil", "Armstrong");
         authorRepository.save(author2);
 
-        assertEquals(2, TestUtil.countIterable(authorRepository.findAll()));
+        assertEquals(2, TestUtilTest.countIterable(authorRepository.findAll()));
     }
 
     @Test
@@ -85,7 +84,7 @@ class AuthorRepositoryTest {
 
         authorRepository.delete(author);
 
-        assertEquals(0, TestUtil.countIterable(authorRepository.findAll()));
+        assertEquals(0, TestUtilTest.countIterable(authorRepository.findAll()));
     }
 
 }

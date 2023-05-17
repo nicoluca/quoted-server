@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.io.Serializable;
 import java.util.Set;
 
 @NoArgsConstructor // Needed for JPA
@@ -21,7 +20,7 @@ public class Author {
     @Column(name = "lastname")
     private String lastName;
 
-    @OneToMany(cascade = CascadeType.MERGE, mappedBy = "author")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "author")
     private Set<Book> books;
 
     public Author(String firstName, String lastName) {

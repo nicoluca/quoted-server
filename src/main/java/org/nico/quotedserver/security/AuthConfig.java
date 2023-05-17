@@ -18,7 +18,7 @@ public class AuthConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 
-        http.authorizeHttpRequests((authz) -> authz
+        http.authorizeHttpRequests((auth) -> auth
                         .anyRequest().authenticated()
                 )
                 .httpBasic(withDefaults());

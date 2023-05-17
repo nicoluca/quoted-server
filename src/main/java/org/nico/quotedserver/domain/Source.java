@@ -1,5 +1,7 @@
 package org.nico.quotedserver.domain;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,12 +10,20 @@ import lombok.Setter;
 
 import java.util.Set;
 
+// Lombok annotations
 @NoArgsConstructor // Needed for JPA
 @AllArgsConstructor
 @Getter @Setter
+
+// JPA annotations
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED) // JOINED to to have a dedicated source table, TABLE_PER_CLASS to have a table per subclass
-@DiscriminatorColumn(name="source_type")
+@DiscriminatorColumn(name="type")
+@JsonTypeInfo( use = JsonTypeInfo.Id.NAME, property = "type", visible = true)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = Book.class, name = "book"),
+        @JsonSubTypes.Type(value = Article.class, name = "article")
+})
 public abstract class Source {
 
     @Id
@@ -36,10 +46,10 @@ public abstract class Source {
         return this.title.equals(source.title);
     }
 
-    public abstract String getOrigin();
+    public abstract String originToString(); // TODO - better name?
 
     @Override
     public String toString() {
-        return this.getTitle() + " (" + this.getOrigin() + ")";
+        return this.getTitle() + " (" + this.originToString() + ")";
     }
 }

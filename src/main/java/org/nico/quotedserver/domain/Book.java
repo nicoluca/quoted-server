@@ -1,5 +1,6 @@
 package org.nico.quotedserver.domain;
 
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,8 +12,9 @@ import lombok.Setter;
 @DiscriminatorValue("book")
 public class Book extends Source {
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER) // TODO Changed from CascadeType.ALL to CascadeType.REMOVE
     @JoinColumn(name = "author_id")
+    @Nonnull
     private Author author;
     @Column(name = "coverpath")
     private String coverPath; // TODO Currently unused, intention to be used in future export to MD feature
@@ -34,7 +36,13 @@ public class Book extends Source {
     }
 
     @Override
-    public String getOrigin() {
-        return this.author.getFirstName() + " " + this.author.getLastName();
+    public String originToString() {
+        // TODO - Spring Data Rest will throw a NullPointerException if the author for GET invocation.
+//        return this.getAuthor().getLastName() + ", " + this.getAuthor().getFirstName();
+        try {
+            return this.getAuthor().getLastName() + ", " + this.getAuthor().getFirstName();
+        } catch (NullPointerException e) {
+            return "Unknown author";
+        }
     }
 }
