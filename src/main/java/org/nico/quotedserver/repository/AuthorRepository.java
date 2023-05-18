@@ -4,7 +4,7 @@ import org.nico.quotedserver.domain.Author;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-@RepositoryRestResource(path = "authors")
+@RepositoryRestResource(excerptProjection = AuthorProjection.class)
 public interface AuthorRepository extends CrudRepository<Author, Long> {
     // Together with Spring Rest Starter, will automatically create a REST API for us
     // Endpoint defaults to /authors
