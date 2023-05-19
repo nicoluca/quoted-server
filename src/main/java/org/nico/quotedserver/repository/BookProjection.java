@@ -8,5 +8,7 @@ import org.springframework.data.rest.core.config.Projection;
 public interface BookProjection {
     long getId();
     String getTitle();
+    String getIsbn();
+    String getCoverPath();
     Author getAuthor();
 }
