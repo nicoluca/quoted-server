@@ -1,5 +1,6 @@
 package org.nico.quotedserver.domain;
 
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -15,6 +16,7 @@ public class Book extends Source {
     @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER) // TODO Changed from CascadeType.ALL to CascadeType.REMOVE
     @JoinColumn(name = "author_id")
     @Nonnull
+    @JsonIncludeProperties({"firstName", "lastName"})
     private Author author;
 
     @Column(name = "coverpath")

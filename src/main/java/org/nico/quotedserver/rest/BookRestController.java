@@ -1,9 +1,6 @@
 package org.nico.quotedserver.rest;
 
-import org.nico.quotedserver.domain.Author;
 import org.nico.quotedserver.domain.Book;
-import org.nico.quotedserver.repository.AuthorRepository;
-import org.nico.quotedserver.repository.BookRepository;
 import org.nico.quotedserver.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -24,7 +21,7 @@ public class BookRestController {
         this.bookService = bookService;
     }
 
-    @PostMapping(path = "/newBook",
+    @PostMapping(path = "/books",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Book> newBook(@RequestBody Book book) {
@@ -33,11 +30,12 @@ public class BookRestController {
         return ResponseEntity.ok(savedBook);
     }
 
-    @PutMapping(path = "/updateBook/{id}",
+    @PutMapping(path = "/books/{id}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Book> updateBook(@PathVariable long id, @RequestBody Book book) {
         logger.info("Received update book: " + book);
+        book.setId(id);
         Optional<Book> updatedBook = bookService.update(book);
         return updatedBook.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }

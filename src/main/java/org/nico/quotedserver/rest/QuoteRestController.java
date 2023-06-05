@@ -1,11 +1,6 @@
 package org.nico.quotedserver.rest;
 
-import org.nico.quotedserver.domain.Article;
-import org.nico.quotedserver.domain.Book;
 import org.nico.quotedserver.domain.Quote;
-import org.nico.quotedserver.domain.Source;
-import org.nico.quotedserver.repository.ArticleRepository;
-import org.nico.quotedserver.repository.BookRepository;
 import org.nico.quotedserver.repository.QuoteRepository;
 import org.nico.quotedserver.service.QuoteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +8,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -32,31 +25,26 @@ public class QuoteRestController {
         this.quoteService = quoteService;
     }
 
-    @GetMapping("/randomQuote")
-    public Quote randomQuote() {
-        // Retrieve a random quote from the database, different from the last one
-        return quoteService.randomQuote();
-    }
 
-    @GetMapping("/allQuotes")
+    @GetMapping("/quotes")
     public List<Quote> allQuotes() {
         // Retrieve all quotes from the database
         return (List<Quote>) quoteRepository.findAll();
     }
 
-    @GetMapping("/quotesBySource/{sourceId}")
-    public List<Quote> quotesBySource(@PathVariable long sourceId) {
-        // Retrieve all quotes from the database
-        return quoteRepository.findBySourceId(sourceId);
+    @GetMapping("/quotes/random")
+    public Quote randomQuote() {
+        // Retrieve a random quote from the database, different from the last one
+        return quoteService.randomQuote();
     }
 
-    @GetMapping("/quotesByString/{searchString}")
-    public List<Quote> quotesByString(@PathVariable String searchString) {
-        // Retrieve all quotes from the database
+
+    @GetMapping("/quotesByString")
+    public List<Quote> quotesByString(@RequestParam(name = "search") String searchString) {
         return quoteRepository.findByTextContaining(searchString);
     }
 
-    @PostMapping(path = "/addQuote",
+    @PostMapping(path = "/quotes",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Quote> addQuote(@RequestBody Quote quote) {
@@ -65,7 +53,7 @@ public class QuoteRestController {
         return savedQuote.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
-    @PutMapping(path = "/updateQuote/{id}",
+    @PutMapping(path = "/quotes/{id}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Quote> updateQuote(@RequestBody Quote quote, @PathVariable long id) {

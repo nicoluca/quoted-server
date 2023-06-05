@@ -23,7 +23,7 @@ public class AuthorService implements ServiceInterface<Author> {
         return savedAuthor.orElseGet(() -> authorRepository.save(author));
     }
 
-    @Override
+    @Override // TODO Unused method, refactor all to 'save'?
     public Optional<Author> update(Author author) {
         if (authorRepository.findById(author.getId()).isEmpty())
             return Optional.empty();

@@ -1,7 +1,6 @@
 package org.nico.quotedserver.rest;
 
 import org.nico.quotedserver.domain.Article;
-import org.nico.quotedserver.repository.ArticleRepository;
 import org.nico.quotedserver.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -25,7 +24,7 @@ public class ArticleRestController {
         this.articleService = articleService;
     }
 
-    @PutMapping(path = "/updateArticle/{id}",
+    @PutMapping(path = "/articles/{id}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Article> updateArticle(@PathVariable long id, @RequestBody Article article) {
