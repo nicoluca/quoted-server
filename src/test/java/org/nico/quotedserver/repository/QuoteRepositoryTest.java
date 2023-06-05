@@ -1,5 +1,6 @@
 package org.nico.quotedserver.repository;
 
+import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -151,5 +152,34 @@ class QuoteRepositoryTest {
         Duration duration = Duration.between(start, end);
         assertTrue(duration.toMillis() < 1000);
         assertEquals(1000, TestUtilTest.countIterable(quoteRepository.findAll()));
+    }
+
+    @Test
+    void findBySourceId() {
+        Quote quote = new Quote("Test quote", book);
+        Quote savedQuote = quoteRepository.save(quote);
+        assertFalse(quoteRepository.findBySourceId(savedQuote.getSource().getId()).isEmpty());
+        assertTrue(quoteRepository.findBySourceId(0L).isEmpty());
+        assertTrue(quoteRepository.findBySourceId(article.getId()).isEmpty());
+    }
+
+    @Test
+    void findByTextContaining() {
+        Author author = new Author("AuthorTest", "Test");
+        author = authorRepository.save(author);
+        Book book = new Book("Test Title", author);
+        book = bookRepository.save(book);
+        Quote quote = new Quote("Test quote", book);
+        quote = quoteRepository.save(quote);
+        assertFalse(quoteRepository.findByTextContaining("Test").isEmpty());
+        assertFalse(quoteRepository.findByTextContaining("TEST").isEmpty());
+        assertFalse(quoteRepository.findByTextContaining("AUTHORTEST").isEmpty());
+        assertTrue(quoteRepository.findByTextContaining("Random").isEmpty());
+
+        Article article = Article.builder().title("test.com").build();
+        article = articleRepository.save(article);
+        Quote quote2 = new Quote("Test quote", article);
+        quote2 = quoteRepository.save(quote2);
+        assertFalse(quoteRepository.findByTextContaining("Test.Com").isEmpty());
     }
 }

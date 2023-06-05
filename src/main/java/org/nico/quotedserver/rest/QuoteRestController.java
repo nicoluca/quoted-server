@@ -60,6 +60,18 @@ public class QuoteRestController {
         return (List<Quote>) quoteRepository.findAll();
     }
 
+    @GetMapping("/quotesBySource/{sourceId}")
+    public List<Quote> quotesBySource(@PathVariable long sourceId) {
+        // Retrieve all quotes from the database
+        return (List<Quote>) quoteRepository.findBySourceId(sourceId);
+    }
+
+    @GetMapping("/quotesByString/{searchString}")
+    public List<Quote> quotesByString(@PathVariable String searchString) {
+        // Retrieve all quotes from the database
+        return (List<Quote>) quoteRepository.findByTextContaining(searchString);
+    }
+
     @PostMapping(path = "/addQuote",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
