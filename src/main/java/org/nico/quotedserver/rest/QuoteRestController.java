@@ -1,23 +1,36 @@
 package org.nico.quotedserver.rest;
 
 import org.nico.quotedserver.domain.Article;
+import org.nico.quotedserver.domain.Book;
 import org.nico.quotedserver.domain.Quote;
+import org.nico.quotedserver.domain.Source;
+import org.nico.quotedserver.repository.ArticleRepository;
+import org.nico.quotedserver.repository.BookRepository;
 import org.nico.quotedserver.repository.QuoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
+import java.util.logging.Logger;
 
 @RestController
 public class QuoteRestController {
 
     private final QuoteRepository quoteRepository;
+    private final ArticleRepository articleRepository;
+    private final BookRepository bookRepository;
     private long lastQuoteId = 0;
+    private final Logger logger = Logger.getLogger(QuoteRestController.class.getName());
 
     @Autowired
-    public QuoteRestController(QuoteRepository quoteRepository) {
+    public QuoteRestController(QuoteRepository quoteRepository, ArticleRepository articleRepository, BookRepository bookRepository) {
         this.quoteRepository = quoteRepository;
+        this.articleRepository = articleRepository;
+        this.bookRepository = bookRepository;
     }
 
     @GetMapping("/randomQuote")
@@ -44,5 +57,29 @@ public class QuoteRestController {
     public List<Quote> allQuotes() {
         // Retrieve all quotes from the database
         return (List<Quote>) quoteRepository.findAll();
+    }
+
+    @PostMapping(path = "/addQuote",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Quote> addQuote(@RequestBody Quote quote) {
+        logger.info("Received new quote: " + quote);
+        Source source = quote.getSource();
+        if (source instanceof Article && articleRepository.findById(source.getId()).isPresent()) {
+            Article article = articleRepository.findById(source.getId()).get();
+            article.setLastVisited(Timestamp.from(Instant.now()));
+            articleRepository.save(article);
+            quote.setSource(article);
+            logger.info("Article found and timestamp updated: " + article);
+        } else if (source instanceof Book && bookRepository.findById(source.getId()).isPresent()) {
+            org.nico.quotedserver.domain.Book book = bookRepository.findById(source.getId()).get();
+            quote.setSource(book);
+            logger.info("Book found: " + book);
+        } else
+            return ResponseEntity.notFound().build();
+
+        quote.setSource(source);
+        Quote savedQuote = quoteRepository.save(quote);
+        return ResponseEntity.ok(savedQuote);
     }
 }
