@@ -91,6 +91,7 @@ class AuthorRepositoryTest {
     }
 
     @Test
+    @DisplayName("Find author by name")
     void findByName() {
         Author author = new Author("Neil", "Stephenson");
         authorRepository.save(author);
