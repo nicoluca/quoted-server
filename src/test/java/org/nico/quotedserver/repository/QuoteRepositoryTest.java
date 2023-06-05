@@ -1,19 +1,20 @@
 package org.nico.quotedserver.repository;
 
-import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import org.nico.quotedserver.domain.*;
-
+import org.nico.quotedserver.domain.Article;
+import org.nico.quotedserver.domain.Author;
+import org.nico.quotedserver.domain.Book;
+import org.nico.quotedserver.domain.Quote;
 import org.nico.quotedserver.util.TestUtilTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.TestPropertySource;
 
@@ -181,5 +182,17 @@ class QuoteRepositoryTest {
         Quote quote2 = new Quote("Test quote", article);
         quote2 = quoteRepository.save(quote2);
         assertFalse(quoteRepository.findByTextContaining("Test.Com").isEmpty());
+    }
+
+    @Test
+    void findRandomQuote() {
+        assertTrue(quoteRepository.findRandomQuote(0L).isEmpty());
+        Quote quote = new Quote("Test quote", book);
+        quote = quoteRepository.save(quote);
+        assertTrue(quoteRepository.findRandomQuote(quote.getId()).isEmpty());
+        assertFalse(quoteRepository.findRandomQuote(0L).isEmpty());
+        Quote quote2 = new Quote("Test quote", book);
+        quote2 = quoteRepository.save(quote2);
+        assertFalse(quoteRepository.findRandomQuote(quote2.getId()).isEmpty());
     }
 }

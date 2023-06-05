@@ -1,6 +1,5 @@
 package org.nico.quotedserver.domain;
 
-import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 import lombok.Getter;

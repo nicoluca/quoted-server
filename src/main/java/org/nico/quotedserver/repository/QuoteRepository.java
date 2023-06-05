@@ -6,11 +6,15 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface QuoteRepository extends CrudRepository<Quote, Long> {
     // Together with Spring Rest Starter, will automatically create a REST API for us
     // Endpoint defaults to /quotes
+
+    @Query(nativeQuery = true, value="SELECT * FROM quote WHERE id != ?1 ORDER BY RANDOM() LIMIT 1;") // PostgreSQL, RANDOM() - might be RAND() for other DBs
+    Optional<Quote> findRandomQuote(long lastQuoteId);
 
     @Query("SELECT q FROM Quote q WHERE q.source.id = ?1")
     List<Quote> findBySourceId(long sourceId);
@@ -28,4 +32,5 @@ public interface QuoteRepository extends CrudRepository<Quote, Long> {
                 OR UPPER(a.url) LIKE CONCAT('%', UPPER(?1), '%')
             """)
     List<Quote> findByTextContaining(String searchString);
+
 }

@@ -7,6 +7,7 @@ import org.nico.quotedserver.domain.Source;
 import org.nico.quotedserver.repository.ArticleRepository;
 import org.nico.quotedserver.repository.BookRepository;
 import org.nico.quotedserver.repository.QuoteRepository;
+import org.nico.quotedserver.service.QuoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,14 +23,16 @@ import java.util.logging.Logger;
 public class QuoteRestController {
 
     private final QuoteRepository quoteRepository;
+    private final QuoteService quoteService;
     private final ArticleRepository articleRepository;
     private final BookRepository bookRepository;
-    private long lastQuoteId = 0;
+    private static long lastQuoteId = 0;
     private final Logger logger = Logger.getLogger(QuoteRestController.class.getName());
 
     @Autowired
-    public QuoteRestController(QuoteRepository quoteRepository, ArticleRepository articleRepository, BookRepository bookRepository) {
+    public QuoteRestController(QuoteRepository quoteRepository, QuoteService quoteService, ArticleRepository articleRepository, BookRepository bookRepository) {
         this.quoteRepository = quoteRepository;
+        this.quoteService = quoteService;
         this.articleRepository = articleRepository;
         this.bookRepository = bookRepository;
     }
@@ -37,21 +40,7 @@ public class QuoteRestController {
     @GetMapping("/randomQuote")
     public Quote randomQuote() {
         // Retrieve a random quote from the database, different from the last one
-        Iterable<Quote> quotes = quoteRepository.findAll();
-
-        if (!quotes.iterator().hasNext())
-            return new Quote("No quotes found", new Article("No articles found", "-"));
-
-        if (quotes.spliterator().getExactSizeIfKnown() == 1)
-            return quotes.iterator().next();
-
-        Quote randomQuote = quotes.iterator().next();
-
-        while (randomQuote.getId() == lastQuoteId)
-            randomQuote = quotes.iterator().next();
-
-        lastQuoteId = randomQuote.getId();
-        return randomQuote;
+        return quoteService.randomQuote();
     }
 
     @GetMapping("/allQuotes")
