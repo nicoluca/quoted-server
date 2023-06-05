@@ -3,11 +3,11 @@ package org.nico.quotedserver.repository;
 import org.nico.quotedserver.domain.Author;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-@RepositoryRestResource(path = "authors", excerptProjection = AuthorProjection.class)
+@Repository
 public interface AuthorRepository extends CrudRepository<Author, Long> {
     // Together with Spring Rest Starter, will automatically create a REST API for us
     // Endpoint defaults to /authors
