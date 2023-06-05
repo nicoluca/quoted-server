@@ -29,7 +29,7 @@ public class Quote {
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "source_id")
-    @JsonIncludeProperties({"id", "type"})
+    @JsonIncludeProperties({"id", "type", "title"})
     private Source source;
 
     public Quote(String text, Source source) {

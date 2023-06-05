@@ -65,10 +65,8 @@ public class QuoteRestController {
     public ResponseEntity<Quote> addQuote(@RequestBody Quote quote) {
         logger.info("Received new quote: " + quote);
         Source source = quote.getSource();
-        if (source instanceof Article && articleRepository.findById(source.getId()).isPresent()) {
-            Article article = articleRepository.findById(source.getId()).get();
-            article.setLastVisited(Timestamp.from(Instant.now()));
-            articleRepository.save(article);
+        if (source instanceof Article) {
+            Article article = resolveArticle(source);
             quote.setSource(article);
             logger.info("Article found and timestamp updated: " + article);
         } else if (source instanceof Book && bookRepository.findById(source.getId()).isPresent()) {
@@ -78,8 +76,22 @@ public class QuoteRestController {
         } else
             return ResponseEntity.notFound().build();
 
-        quote.setSource(source);
         Quote savedQuote = quoteRepository.save(quote);
         return ResponseEntity.ok(savedQuote);
+    }
+
+    private Article resolveArticle(Source source) {
+        Article article = (Article) source;
+        if (articleRepository.findById(source.getId()).isPresent())
+            article = articleRepository.findById(source.getId()).get();
+        else if (articleRepository.findByUrl(article.getTitle()).isPresent()) // Source only passes the title, not the URL
+            article = articleRepository.findByUrl(article.getTitle()).get();
+        else
+            article = new Article(source.getTitle(), source.getTitle());
+
+        article.setLastVisited(Timestamp.from(Instant.now()));
+
+        article = articleRepository.save(article);
+        return article;
     }
 }

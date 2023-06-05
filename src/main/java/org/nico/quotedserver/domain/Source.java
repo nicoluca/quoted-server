@@ -1,6 +1,7 @@
 package org.nico.quotedserver.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
@@ -20,7 +21,7 @@ import java.util.Set;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED) // JOINED to to have a dedicated source table, TABLE_PER_CLASS to have a table per subclass
 @DiscriminatorColumn(name="type")
-@JsonTypeInfo( use = JsonTypeInfo.Id.NAME, property = "type", visible = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", visible = true)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = Book.class, name = "book"),
         @JsonSubTypes.Type(value = Article.class, name = "article")
@@ -29,6 +30,7 @@ public abstract class Source {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
+    @JsonIgnoreProperties(ignoreUnknown = true) // If not available, ignore (used to retrieve article by url)
     private long id;
     @Column(name = "title")
     private String title;
