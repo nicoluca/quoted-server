@@ -1,5 +1,6 @@
 package org.nico.quotedserver.domain;
 
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -15,9 +16,12 @@ public class Book extends Source {
     @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER) // TODO Changed from CascadeType.ALL to CascadeType.REMOVE
     @JoinColumn(name = "author_id")
     @Nonnull
+    // @JsonIncludeProperties({"id"})
     private Author author;
+
     @Column(name = "coverpath")
     private String coverPath; // TODO Currently unused, intention to be used in future export to MD feature
+
     @Column(name = "isbn")
     private String isbn; // TODO Currently unused, intention to be used in future export to MD feature
 
@@ -37,8 +41,6 @@ public class Book extends Source {
 
     @Override
     public String originToString() {
-        // TODO - Spring Data Rest will throw a NullPointerException if the author for GET invocation.
-//        return this.getAuthor().getLastName() + ", " + this.getAuthor().getFirstName();
         try {
             return this.getAuthor().getLastName() + ", " + this.getAuthor().getFirstName();
         } catch (NullPointerException e) {

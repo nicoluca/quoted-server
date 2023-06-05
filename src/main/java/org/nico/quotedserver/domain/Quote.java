@@ -1,5 +1,8 @@
 package org.nico.quotedserver.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,8 +26,10 @@ public class Quote {
 
     @Column(name = "text", columnDefinition = "TEXT")
     private String text;
+
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "source_id")
+    @JsonIncludeProperties({"id"})
     private Source source;
 
     public Quote(String text, Source source) {

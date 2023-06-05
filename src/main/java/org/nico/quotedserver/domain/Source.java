@@ -1,5 +1,6 @@
 package org.nico.quotedserver.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
@@ -32,6 +33,7 @@ public abstract class Source {
     @Column(name = "title")
     private String title;
     @OneToMany(cascade = CascadeType.MERGE, mappedBy = "source")
+    @JsonIgnore // If not, infinite recursion
     private Set<Quote> quotes;
 
     public Source(String title) {

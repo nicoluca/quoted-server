@@ -1,5 +1,6 @@
 package org.nico.quotedserver.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ public class Author {
     private String lastName;
 
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "author")
+    @JsonIgnore // If not, infinite recursion
     private Set<Book> books;
 
     public Author(String firstName, String lastName) {

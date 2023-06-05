@@ -12,7 +12,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.TestPropertySource;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest // Uses an in-memory database by default (H2), which was added as a dependency in pom.xml
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -87,4 +90,23 @@ class AuthorRepositoryTest {
         assertEquals(0, TestUtilTest.countIterable(authorRepository.findAll()));
     }
 
+    @Test
+    void findByName() {
+        Author author = new Author("Neil", "Stephenson");
+        authorRepository.save(author);
+
+        Author author2 = new Author("Neil", "Armstrong");
+        authorRepository.save(author2);
+
+        Optional<Author> authorOptional = authorRepository.findByName("NEIL", "stephenson");
+        assertTrue(authorOptional.isPresent());
+        assertEquals(authorOptional.get(), author);
+
+        Optional<Author> authorOptional2 = authorRepository.findByName("neil", "Armstrong");
+        assertTrue(authorOptional2.isPresent());
+        assertEquals(authorOptional2.get(), author2);
+
+        Optional<Author> authorOptional3 = authorRepository.findByName("Neil", "NotPresent");
+        assertTrue(authorOptional3.isEmpty());
+    }
 }
