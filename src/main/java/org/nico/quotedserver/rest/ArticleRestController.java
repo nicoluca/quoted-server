@@ -2,6 +2,7 @@ package org.nico.quotedserver.rest;
 
 import org.nico.quotedserver.domain.Article;
 import org.nico.quotedserver.repository.ArticleRepository;
+import org.nico.quotedserver.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +18,11 @@ import java.util.logging.Logger;
 public class ArticleRestController {
 
     private final Logger logger = Logger.getLogger(ArticleRestController.class.getName());
-    private final ArticleRepository articleRepository;
+    private final ArticleService articleService;
 
     @Autowired
-    public ArticleRestController(ArticleRepository articleRepository) {
-        this.articleRepository = articleRepository;
+    public ArticleRestController(ArticleService articleService) {
+        this.articleService = articleService;
     }
 
     @PutMapping(path = "/updateArticle/{id}",
@@ -29,18 +30,8 @@ public class ArticleRestController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Article> updateArticle(@PathVariable long id, @RequestBody Article article) {
         logger.info("Received article to update: " + article);
-        Optional<Article> optionalArticle = articleRepository.findById(id);
-
-        if (optionalArticle.isEmpty())
-            return ResponseEntity.notFound().build();
-
-        Article articleToUpdate = optionalArticle.get();
-        articleToUpdate.setTitle(article.getTitle());
-        articleToUpdate.setUrl(article.getUrl());
-        articleToUpdate.setLastVisited(article.getLastVisited());
-
-        Article savedArticle = articleRepository.save(articleToUpdate);
-        logger.info("Saved article: " + savedArticle);
-        return ResponseEntity.ok(savedArticle);
+        article.setId(id);
+        Optional<Article> result = articleService.update(article);
+        return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
 
@@ -19,7 +20,8 @@ public class Article extends Source {
 
     @Column(name = "url")
     private String url;
-    // TODO Workaround instead of using @CreatedDate
+
+    @CreationTimestamp
     @Column(name = "last_visited", nullable = false)
     private Timestamp lastVisited = new Timestamp(System.currentTimeMillis());
 
@@ -52,10 +54,7 @@ public class Article extends Source {
     }
 
     private static String removeLastSlash(String url) {
-        if (url.endsWith("/"))
-            return url.substring(0, url.length() - 1);
-        else
-            return url;
+        return url.replaceAll("/$", "");
     }
 
     @Override

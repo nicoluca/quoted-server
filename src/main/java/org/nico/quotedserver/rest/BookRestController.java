@@ -4,6 +4,7 @@ import org.nico.quotedserver.domain.Author;
 import org.nico.quotedserver.domain.Book;
 import org.nico.quotedserver.repository.AuthorRepository;
 import org.nico.quotedserver.repository.BookRepository;
+import org.nico.quotedserver.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +17,11 @@ import java.util.logging.Logger;
 public class BookRestController {
 
     Logger logger = Logger.getLogger(BookRestController.class.getName());
-    private final BookRepository bookRepository;
-    private final AuthorRepository authorRepository;
+    private final BookService bookService;
 
     @Autowired
-    public BookRestController(BookRepository bookRepository, AuthorRepository authorRepository) {
-        this.bookRepository = bookRepository;
-        this.authorRepository = authorRepository;
+    public BookRestController(BookService bookService) {
+        this.bookService = bookService;
     }
 
     @PostMapping(path = "/newBook",
@@ -30,21 +29,7 @@ public class BookRestController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Book> newBook(@RequestBody Book book) {
         logger.info("Received new book: " + book);
-        Author author = book.getAuthor();
-        Optional<Author> optionalAuthor= authorRepository.findByName(author.getFirstName(), author.getLastName());
-
-        if (optionalAuthor.isPresent()) {
-            logger.info("Author already exists:" + author);
-            author = optionalAuthor.get();
-        } else {
-            logger.info("Author does not exist, creating new one: " + author);
-            author = authorRepository.save(author);
-        }
-
-        book.setAuthor(author);
-
-        Book savedBook = bookRepository.save(book);
-        logger.info("Saved book: " + savedBook);
+        Book savedBook = bookService.save(book);
         return ResponseEntity.ok(savedBook);
     }
 
@@ -53,27 +38,7 @@ public class BookRestController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Book> updateBook(@PathVariable long id, @RequestBody Book book) {
         logger.info("Received update book: " + book);
-        Optional<Book> optionalBook = bookRepository.findById(id);
-
-        if (optionalBook.isEmpty())
-            return ResponseEntity.notFound().build();
-
-        Book savedBook = optionalBook.get();
-        savedBook.setTitle(book.getTitle());
-        savedBook.setIsbn(book.getIsbn());
-        savedBook.setCoverPath(book.getCoverPath());
-
-        Optional<Author> savedAuthor
-                = authorRepository.findByName(book.getAuthor().getFirstName(), book.getAuthor().getLastName());
-        Author author;
-        if (savedAuthor.isEmpty())
-            author = authorRepository.save(book.getAuthor());
-        else
-            author = savedAuthor.get();
-
-        savedBook.setAuthor(author);
-        savedBook = bookRepository.save(savedBook);
-        logger.info("Saved book: " + savedBook);
-        return ResponseEntity.ok(savedBook);
+        Optional<Book> updatedBook = bookService.update(book);
+        return updatedBook.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

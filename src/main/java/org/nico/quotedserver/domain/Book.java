@@ -15,7 +15,6 @@ public class Book extends Source {
     @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER) // TODO Changed from CascadeType.ALL to CascadeType.REMOVE
     @JoinColumn(name = "author_id")
     @Nonnull
-    // @JsonIncludeProperties({"id"})
     private Author author;
 
     @Column(name = "coverpath")

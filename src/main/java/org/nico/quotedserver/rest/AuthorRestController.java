@@ -22,6 +22,4 @@ public class AuthorRestController {
     public List<Author> getAllAuthors() {
         return (List<Author>) authorRepository.findAll();
     }
-
-
 }

@@ -36,7 +36,6 @@ public class Author {
         if (o == null || getClass() != o.getClass()) return false;
 
         Author author = (Author) o;
-
         return firstName.equalsIgnoreCase(author.firstName) &&
         lastName.equalsIgnoreCase(author.lastName);
     }

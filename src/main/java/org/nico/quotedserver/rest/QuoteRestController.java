@@ -24,17 +24,12 @@ public class QuoteRestController {
 
     private final QuoteRepository quoteRepository;
     private final QuoteService quoteService;
-    private final ArticleRepository articleRepository;
-    private final BookRepository bookRepository;
-    private static long lastQuoteId = 0;
     private final Logger logger = Logger.getLogger(QuoteRestController.class.getName());
 
     @Autowired
-    public QuoteRestController(QuoteRepository quoteRepository, QuoteService quoteService, ArticleRepository articleRepository, BookRepository bookRepository) {
+    public QuoteRestController(QuoteRepository quoteRepository, QuoteService quoteService) {
         this.quoteRepository = quoteRepository;
         this.quoteService = quoteService;
-        this.articleRepository = articleRepository;
-        this.bookRepository = bookRepository;
     }
 
     @GetMapping("/randomQuote")
@@ -52,13 +47,13 @@ public class QuoteRestController {
     @GetMapping("/quotesBySource/{sourceId}")
     public List<Quote> quotesBySource(@PathVariable long sourceId) {
         // Retrieve all quotes from the database
-        return (List<Quote>) quoteRepository.findBySourceId(sourceId);
+        return quoteRepository.findBySourceId(sourceId);
     }
 
     @GetMapping("/quotesByString/{searchString}")
     public List<Quote> quotesByString(@PathVariable String searchString) {
         // Retrieve all quotes from the database
-        return (List<Quote>) quoteRepository.findByTextContaining(searchString);
+        return quoteRepository.findByTextContaining(searchString);
     }
 
     @PostMapping(path = "/addQuote",
@@ -66,35 +61,8 @@ public class QuoteRestController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Quote> addQuote(@RequestBody Quote quote) {
         logger.info("Received new quote: " + quote);
-        Source source = quote.getSource();
-        if (source instanceof Article) {
-            Article article = resolveArticle(source);
-            quote.setSource(article);
-            logger.info("Article found and timestamp updated: " + article);
-        } else if (source instanceof Book && bookRepository.findById(source.getId()).isPresent()) {
-            org.nico.quotedserver.domain.Book book = bookRepository.findById(source.getId()).get();
-            quote.setSource(book);
-            logger.info("Book found: " + book);
-        } else
-            return ResponseEntity.notFound().build();
-
-        Quote savedQuote = quoteRepository.save(quote);
-        return ResponseEntity.ok(savedQuote);
-    }
-
-    private Article resolveArticle(Source source) {
-        Article article = (Article) source;
-        if (articleRepository.findById(source.getId()).isPresent())
-            article = articleRepository.findById(source.getId()).get();
-        else if (articleRepository.findByUrl(article.getTitle()).isPresent()) // Source only passes the title, not the URL
-            article = articleRepository.findByUrl(article.getTitle()).get();
-        else
-            article = new Article(source.getTitle(), source.getTitle());
-
-        article.setLastVisited(Timestamp.from(Instant.now()));
-
-        article = articleRepository.save(article);
-        return article;
+        Optional<Quote> savedQuote = quoteService.save(quote);
+        return savedQuote.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     @PutMapping(path = "/updateQuote/{id}",
@@ -102,27 +70,8 @@ public class QuoteRestController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Quote> updateQuote(@RequestBody Quote quote, @PathVariable long id) {
         logger.info("Received updated quote: " + quote);
-        Optional<Quote> optionalQuoteToUpdate= quoteRepository.findById(id);
-        if (optionalQuoteToUpdate.isEmpty())
-            return ResponseEntity.notFound().build();
-        Quote quoteToUpdate = optionalQuoteToUpdate.get();
-
-        quoteToUpdate.setText(quote.getText());
-        quoteToUpdate.setLastEdited(Timestamp.from(Instant.now()));
-
-        Source source = quote.getSource();
-        if (source instanceof Article) {
-            Article article = resolveArticle(source);
-            quoteToUpdate.setSource(article);
-            logger.info("Article found and timestamp updated: " + article);
-        } else if (source instanceof Book && bookRepository.findById(source.getId()).isPresent()) {
-            Book book = bookRepository.findById(source.getId()).get();
-            quoteToUpdate.setSource(book);
-            logger.info("Book found: " + book);
-        } else
-            return ResponseEntity.notFound().build();
-
-        Quote savedQuote = quoteRepository.save(quoteToUpdate);
-        return ResponseEntity.ok(savedQuote);
+        quote.setId(id);
+        Optional<Quote> savedQuote = quoteService.update(quote);
+        return savedQuote.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.badRequest().build());
     }
 }

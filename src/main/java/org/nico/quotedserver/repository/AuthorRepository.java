@@ -9,9 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface AuthorRepository extends CrudRepository<Author, Long> {
-    // Together with Spring Rest Starter, will automatically create a REST API for us
-    // Endpoint defaults to /authors
-
     @Query("SELECT a FROM Author a " +
             "WHERE UPPER(a.firstName) LIKE CONCAT('%', UPPER(?1), '%') " +
             "AND UPPER(a.lastName) LIKE CONCAT('%', UPPER(?2), '%')")
