@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 @RestController
@@ -93,5 +94,34 @@ public class QuoteRestController {
 
         article = articleRepository.save(article);
         return article;
+    }
+
+    @PutMapping(path = "/updateQuote/{id}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Quote> updateQuote(@RequestBody Quote quote, @PathVariable long id) {
+        logger.info("Received updated quote: " + quote);
+        Optional<Quote> optionalQuoteToUpdate= quoteRepository.findById(id);
+        if (optionalQuoteToUpdate.isEmpty())
+            return ResponseEntity.notFound().build();
+        Quote quoteToUpdate = optionalQuoteToUpdate.get();
+
+        quoteToUpdate.setText(quote.getText());
+        quoteToUpdate.setLastEdited(Timestamp.from(Instant.now()));
+
+        Source source = quote.getSource();
+        if (source instanceof Article) {
+            Article article = resolveArticle(source);
+            quoteToUpdate.setSource(article);
+            logger.info("Article found and timestamp updated: " + article);
+        } else if (source instanceof Book && bookRepository.findById(source.getId()).isPresent()) {
+            Book book = bookRepository.findById(source.getId()).get();
+            quoteToUpdate.setSource(book);
+            logger.info("Book found: " + book);
+        } else
+            return ResponseEntity.notFound().build();
+
+        Quote savedQuote = quoteRepository.save(quoteToUpdate);
+        return ResponseEntity.ok(savedQuote);
     }
 }
