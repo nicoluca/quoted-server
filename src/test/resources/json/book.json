@@ -1,0 +1,9 @@
+{
+  "type": "book",
+  "title": "Manual Book",
+  "isbn": "something",
+  "author": {
+    "firstName": "Ingeborg",
+    "lastName": "Bachmann"
+  }
+}
