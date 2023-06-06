@@ -3,6 +3,7 @@ package org.nico.quotedserver.domain;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,6 +26,7 @@ public class Book extends Source {
     @Column(name = "isbn")
     private String isbn; // TODO Currently unused, intention to be used in future export to MD feature
 
+    @Builder
     public Book(String title, Author author) {
         super(title);
         this.author = author;
