@@ -21,7 +21,7 @@ public class QuoteService implements ServiceInterface<Quote> {
     private final QuoteRepository quoteRepository;
     private final BookRepository bookRepository;
     private final ArticleRepository articleRepository;
-    private static long lastQuoteId = 0;
+    private static long lastQuoteId = 0L;
     private final Logger logger = Logger.getLogger(QuoteService.class.getName());
 
     @Autowired
@@ -31,7 +31,6 @@ public class QuoteService implements ServiceInterface<Quote> {
         this.articleRepository = articleRepository;
     }
 
-    // TODO - test
     // TODO - random is likely not desirable, as we want to cycle through all quotes
     public Quote randomQuote() {
         // Retrieve a random quote from the database, different from the last one

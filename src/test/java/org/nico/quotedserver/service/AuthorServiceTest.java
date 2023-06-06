@@ -3,7 +3,6 @@ package org.nico.quotedserver.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.nico.quotedserver.domain.Author;
-import org.nico.quotedserver.repository.ArticleRepository;
 import org.nico.quotedserver.repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
