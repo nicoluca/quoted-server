@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest // Uses an in-memory database by default (H2), which was added as a dependency in pom.xml
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -107,5 +108,12 @@ class ArticleRepositoryTest {
         LocalDate today = LocalDate.now();
         LocalDate lastVisited = article.getLastVisited().toLocalDateTime().toLocalDate();
         assertEquals(today, lastVisited);
+    }
+
+    @Test
+    void findByUrl() {
+        articleRepository.save(article);
+        assertTrue(articleRepository.findByUrl(article.getUrl()).isPresent());
+        assertEquals(article, articleRepository.findByUrl(article.getUrl()).get());
     }
 }
