@@ -18,6 +18,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -67,6 +68,8 @@ class BookRestControllerTest {
                     assertTrue(contentAsString.contains("\"id\":1"));
                     assertTrue(contentAsString.contains("book"));
                 });
+
+        verify(bookService).save(any(Book.class));
     }
 
     @Test
@@ -85,6 +88,7 @@ class BookRestControllerTest {
     @Test
     void updateBook() throws Exception {
         when(bookService.update(any(Book.class))).thenReturn(Optional.ofNullable(book));
+
         this.mockMvc.perform(
                         MockMvcRequestBuilders.put("/books/1")
                                 .with(user(username).password(password))
@@ -101,5 +105,7 @@ class BookRestControllerTest {
                     assertTrue(contentAsString.contains("\"id\":1"));
                     assertTrue(contentAsString.contains("book"));
                 });
+
+        verify(bookService).update(any(Book.class));
     }
 }

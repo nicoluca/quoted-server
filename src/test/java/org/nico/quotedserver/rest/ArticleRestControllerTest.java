@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -49,8 +50,6 @@ class ArticleRestControllerTest {
 
     @Test
     void givenArticleIdThatDoesExist_whenNotAuthenticated_Then401() throws Exception {
-        when(articleService.update(any(Article.class))).thenReturn(Optional.of(article));
-
         this.mockMvc.perform(
                         MockMvcRequestBuilders.put("/articles/1")
                                 .contentType("application/json")
@@ -86,5 +85,7 @@ class ArticleRestControllerTest {
                 .accept("application/json")
                 )
                     .andExpect(status().isOk());
+
+        verify(articleService).update(any(Article.class));
     }
 }

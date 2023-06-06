@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -49,6 +50,8 @@ class SourceRestControllerTest {
                                 .accept("application/json")
                 )
                 .andExpect(status().isOk());
+
+        verify(sourceRepository).findAll();
     }
 
     @Test
@@ -56,6 +59,7 @@ class SourceRestControllerTest {
         List<Source> sources = new ArrayList<>();
         sources.add(new Article("Test Source", "test.de"));
         sources.add(new Book("Test Source", new Author("Firstname", "Lastname")));
+
         when(sourceRepository.findAll()).thenReturn(sources);
 
         this.mockMvc.perform(
@@ -71,6 +75,8 @@ class SourceRestControllerTest {
                     assertTrue(contentAsString.contains("article"));
                     assertTrue(contentAsString.contains("book"));
                 });
+
+        verify(sourceRepository).findAll();
     }
 
     @Test
@@ -91,5 +97,7 @@ class SourceRestControllerTest {
                     assertTrue(contentAsString.contains("Test Quote"));
                     assertTrue(contentAsString.contains("Test Source"));
                 });
+
+        verify(quoteRepository).findBySourceId(1L);
     }
 }

@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -83,6 +84,8 @@ class QuoteRestControllerTest {
                     assertTrue(contentString.contains("test.de"));
                     assertTrue(contentString.contains("Test quote"));
                 });
+
+        verify(quoteRepository).findAll();
     }
 
     @Test
@@ -100,6 +103,8 @@ class QuoteRestControllerTest {
                     assertTrue(contentString.contains("test.de"));
                     assertTrue(contentString.contains("Test quote"));
                 });
+
+        verify(quoteService).randomQuote();
     }
 
     @Test
@@ -118,6 +123,8 @@ class QuoteRestControllerTest {
                     assertTrue(contentString.contains("test.de"));
                     assertTrue(contentString.contains("Test quote"));
                 });
+
+        verify(quoteRepository).findByTextContaining("test");
     }
 
     @Test
@@ -138,6 +145,8 @@ class QuoteRestControllerTest {
                     assertTrue(contentString.contains("test.de"));
                     assertTrue(contentString.contains("Test quote"));
                 });
+
+        verify(quoteService).save(any(Quote.class));
     }
 
     @Test
@@ -171,6 +180,8 @@ class QuoteRestControllerTest {
                     assertTrue(contentString.contains("test.de"));
                     assertTrue(contentString.contains("Test quote"));
                 });
+
+        verify(quoteService).update(any(Quote.class));
     }
 
 
