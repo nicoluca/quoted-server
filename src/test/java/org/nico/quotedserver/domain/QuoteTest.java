@@ -3,6 +3,9 @@ package org.nico.quotedserver.domain;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
 class QuoteTest {
     private Quote quote, quote2, quote3;
 
@@ -26,5 +29,11 @@ class QuoteTest {
     void getSource() {
         assert quote.getSource().equals(quote2.getSource());
         assert !quote.getSource().equals(quote3.getSource());
+    }
+
+    @Test
+    void testEquals() {
+        assertEquals(quote, quote2);
+        assertNotEquals(quote, quote3);
     }
 }

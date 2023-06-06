@@ -33,4 +33,21 @@ class ArticleTest {
         LocalDate articleDate = article.getLastVisited().toLocalDateTime().toLocalDate();
         assertEquals(today, articleDate);
     }
+
+    @Test
+    void testToString() {
+        Article article = Article.builder().url("test.de").build();
+        String result = article.toString();
+        assertEquals("test.de", result);
+
+        Article article2 = Article.builder().url("test.de").title("test").build();
+        String result2 = article2.toString();
+        assertEquals("test (test.de)", result2);
+    }
+
+    @Test
+    void originToString() {
+        Article article = Article.builder().url("test.de").build();
+        assertEquals("test.de", article.originToString());
+    }
 }

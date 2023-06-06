@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class BookTest {
     private Book book1, book2;
@@ -26,5 +28,14 @@ class BookTest {
         Author author1 = new Author("j.r.r.", "Tolkien");
         assert book1.getAuthor().equals(author1);
         assert book2.getAuthor().equals(author1);
+    }
+
+    @Test
+    void originToString() {
+        Book book = new Book("The Hobbit", null);
+        assertEquals("Unknown author", book.originToString());
+
+        book.setAuthor(new Author("Firstname", "Lastname"));
+        assertEquals("Lastname, Firstname", book.originToString());
     }
 }

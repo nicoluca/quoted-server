@@ -37,7 +37,7 @@ public class Article extends Source {
 
     @Override
     public String toString() {
-        if (this.getTitle() == null || this.getTitle().equals(this.url))
+        if (this.getTitle().equals(this.url))
             return this.getTitle();
         else
             return super.toString();
@@ -60,10 +60,5 @@ public class Article extends Source {
     @Override
     public String originToString() {
         return this.url;
-    }
-
-    // Return class name without package name
-    public static String getClassName() {
-        return Article.class.getSimpleName();
     }
 }
