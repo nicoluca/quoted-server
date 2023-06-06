@@ -35,7 +35,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ArticleRestController.class)
-@AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
 class ArticleRestControllerTest {
 
@@ -44,9 +43,6 @@ class ArticleRestControllerTest {
 
     @Value("${spring.security.user.password}")
     private String password;
-
-    @Value("${base.url}")
-    private String baseUrl;
 
     @MockBean
     ArticleService articleService;
@@ -69,7 +65,7 @@ class ArticleRestControllerTest {
         when(articleService.update(any(Article.class))).thenReturn(Optional.of(article));
 
         this.mockMvc.perform(
-                        MockMvcRequestBuilders.put(baseUrl + "/articles/1")
+                        MockMvcRequestBuilders.put("/articles/1")
                                 .contentType("application/json")
                                 .content(TestUtil.resourceToString("/json/article.json"))
                                 .with(csrf())
@@ -80,7 +76,7 @@ class ArticleRestControllerTest {
     @Test
     void givenArticleIdThatDoesNotExist_whenUpdated_Then404() throws Exception {
         this.mockMvc.perform(
-                MockMvcRequestBuilders.put(baseUrl + "/articles/1")
+                MockMvcRequestBuilders.put("/articles/1")
                 .contentType("application/json")
                 .content(TestUtil.resourceToString("/json/article.json"))
                 .with(csrf())

@@ -39,8 +39,8 @@ public class QuoteRestController {
     }
 
 
-    @GetMapping("/quotesByString")
-    public List<Quote> quotesByString(@RequestParam(name = "search") String searchString) {
+    @GetMapping("/quotes/search")
+    public List<Quote> quotesByString(@RequestParam(name = "string") String searchString) {
         return quoteRepository.findByTextContaining(searchString);
     }
 

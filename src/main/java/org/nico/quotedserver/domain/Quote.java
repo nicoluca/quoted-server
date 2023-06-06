@@ -2,6 +2,7 @@ package org.nico.quotedserver.domain;
 
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,6 +31,7 @@ public class Quote {
     @JsonIncludeProperties({"id", "type", "title"})
     private Source source;
 
+    @Builder
     public Quote(String text, Source source) {
         this.text = text;
         this.source = source;

@@ -26,7 +26,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @WebMvcTest(BookRestController.class)
-@AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
 class BookRestControllerTest {
     @Value("${spring.security.user.name}")

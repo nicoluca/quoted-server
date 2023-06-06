@@ -27,7 +27,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(SourceRestController.class)
-@AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
 class SourceRestControllerTest {
 
