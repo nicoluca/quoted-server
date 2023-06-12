@@ -1,5 +1,6 @@
 package org.nico.quotedserver.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -23,6 +24,7 @@ public class Article extends Source {
 
     @CreationTimestamp
     @Column(name = "last_visited", nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Europe/Paris")
     private Timestamp lastVisited = new Timestamp(System.currentTimeMillis());
 
     @Builder

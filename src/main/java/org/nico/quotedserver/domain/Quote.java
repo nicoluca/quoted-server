@@ -1,5 +1,6 @@
 package org.nico.quotedserver.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -21,6 +22,7 @@ public class Quote {
 
     @CreationTimestamp
     @Column(name = "last_edited")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Europe/Paris")
     private Timestamp lastEdited;
 
     @Column(name = "text", columnDefinition = "TEXT")
