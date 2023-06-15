@@ -5,11 +5,11 @@ import org.nico.quotedserver.domain.Source;
 import org.nico.quotedserver.repository.QuoteRepository;
 import org.nico.quotedserver.repository.SourceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class SourceRestController {
@@ -31,8 +31,21 @@ public class SourceRestController {
 
     @GetMapping("/sources/{sourceId}/quotes")
     public List<Quote> quotesBySource(@PathVariable long sourceId) {
-        // Retrieve all quotes from the database
         return quoteRepository.findBySourceId(sourceId);
     }
 
+    @PostMapping("/sources/{sourceId}/quotes")
+    public ResponseEntity<Quote> addQuoteToSource(@PathVariable long sourceId,
+                                                  @RequestBody Quote quote) {
+        if (quote.getSource() != null)
+            return ResponseEntity.badRequest().build();
+
+        Optional<Source> source = sourceRepository.findById(sourceId);
+        if (source.isEmpty())
+            return ResponseEntity.notFound().build();
+        quote.setSource(source.get());
+
+        Quote savedQuote = quoteRepository.save(quote);
+        return ResponseEntity.ok(savedQuote);
+    }
 }

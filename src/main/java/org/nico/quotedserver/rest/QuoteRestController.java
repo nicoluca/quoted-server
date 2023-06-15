@@ -25,7 +25,6 @@ public class QuoteRestController {
         this.quoteService = quoteService;
     }
 
-
     @GetMapping("/quotes")
     public List<Quote> allQuotes() {
         // Retrieve all quotes from the database
@@ -38,28 +37,20 @@ public class QuoteRestController {
         return quoteService.randomQuote();
     }
 
-
     @GetMapping("/quotes/search")
     public List<Quote> quotesByString(@RequestParam(name = "string") String searchString) {
         return quoteRepository.findByTextContaining(searchString);
     }
 
-    @PostMapping(path = "/quotes",
+    @PutMapping(path = "/quotes/{quoteId}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Quote> addQuote(@RequestBody Quote quote) {
-        logger.info("Received new quote: " + quote);
-        Optional<Quote> savedQuote = quoteService.save(quote);
-        return savedQuote.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.badRequest().build());
-    }
-
-    @PutMapping(path = "/quotes/{id}",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Quote> updateQuote(@RequestBody Quote quote, @PathVariable long id) {
+    public ResponseEntity<Quote> updateQuote(@RequestBody Quote quote,
+                                             @PathVariable long quoteId) {
         logger.info("Received updated quote: " + quote);
-        quote.setId(id);
+        quote.setId(quoteId);
         Optional<Quote> savedQuote = quoteService.update(quote);
-        return savedQuote.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.badRequest().build());
+        return savedQuote.map(ResponseEntity::ok).orElseGet(()
+                -> ResponseEntity.badRequest().build());
     }
 }

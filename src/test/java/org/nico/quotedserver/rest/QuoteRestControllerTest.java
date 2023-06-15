@@ -1,6 +1,7 @@
 package org.nico.quotedserver.rest;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.nico.quotedserver.TestUtil;
 import org.nico.quotedserver.domain.Article;
@@ -128,6 +129,7 @@ class QuoteRestControllerTest {
     }
 
     @Test
+    @Disabled("Moved functionality to source rest controller, can be deleted once finalised.")
     void postValidQuote() throws Exception {
         when(quoteService.save(any(Quote.class))).thenReturn(Optional.ofNullable(quote));
 
@@ -150,6 +152,7 @@ class QuoteRestControllerTest {
     }
 
     @Test
+    @Disabled("Moved functionality to source rest controller, can be deleted once finalised.")
     void postInvalidQuote() throws Exception {
         this.mockMvc.perform(
                         MockMvcRequestBuilders.post("/quotes")

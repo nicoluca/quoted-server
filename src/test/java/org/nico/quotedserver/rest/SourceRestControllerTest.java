@@ -1,6 +1,7 @@
 package org.nico.quotedserver.rest;
 
 import org.junit.jupiter.api.Test;
+import org.nico.quotedserver.TestUtil;
 import org.nico.quotedserver.domain.*;
 import org.nico.quotedserver.repository.QuoteRepository;
 import org.nico.quotedserver.repository.SourceRepository;
@@ -14,10 +15,13 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -100,4 +104,57 @@ class SourceRestControllerTest {
 
         verify(quoteRepository).findBySourceId(1L);
     }
+
+    @Test
+    void postValidQuoteToExistingSource() throws Exception {
+        Source source = new Article("Test Source", "test.de");
+        Quote quote = new Quote("Test Quote", source);
+        when(sourceRepository.findById(1L)).thenReturn(java.util.Optional.of(source));
+        when(quoteRepository.save(any(Quote.class))).thenReturn(quote);
+
+        this.mockMvc.perform(
+                        MockMvcRequestBuilders.post("/sources/1/quotes")
+                                .with(user(username).password(password))
+                                .with(csrf())
+                                .accept("application/json")
+                                .contentType("application/json")
+                                .content(TestUtil.resourceToString("/json/quote_without_source.json"))
+                )
+                .andExpect(status().isOk())
+                .andExpect(result -> {
+                    String contentAsString = result.getResponse().getContentAsString();
+                    assertTrue(contentAsString.contains("Test Quote"));
+                    assertTrue(contentAsString.contains("Test Source"));
+                });
+
+        verify(sourceRepository).findById(1L);
+        verify(quoteRepository).save(quote);
+    }
+
+    @Test
+    void postInvalidQuoteToExistingSource() throws Exception {
+        this.mockMvc.perform(
+                        MockMvcRequestBuilders.post("/sources/1/quotes")
+                                .with(user(username).password(password))
+                                .with(csrf())
+                                .accept("application/json")
+                                .contentType("application/json")
+                                .content(TestUtil.resourceToString("/json/quote.json"))
+                )
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void postValidQuoteToNonExistingSource() throws Exception {
+        this.mockMvc.perform(
+                        MockMvcRequestBuilders.post("/sources/1/quotes")
+                                .with(user(username).password(password))
+                                .with(csrf())
+                                .accept("application/json")
+                                .contentType("application/json")
+                                .content(TestUtil.resourceToString("/json/quote_without_source.json"))
+                )
+                .andExpect(status().isNotFound());
+    }
+
 }
