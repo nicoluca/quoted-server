@@ -23,8 +23,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -187,5 +186,32 @@ class QuoteRestControllerTest {
         verify(quoteService).update(any(Quote.class));
     }
 
+    @Test
+    void deleteExistingQuote() throws Exception {
+        Quote quote = new Quote("Test", null);
+        when(quoteRepository.findById(1L)).thenReturn(Optional.of(quote));
+        doNothing().when(quoteRepository).delete(any(Quote.class));
+
+        this.mockMvc.perform(
+                        MockMvcRequestBuilders.delete("/quotes/1")
+                                .accept("application/json")
+                                .with(user(username).password(password))
+                                .with(csrf())
+                )
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void deleteNonExistingQuote() throws Exception {
+        when(quoteRepository.findById(1L)).thenReturn(Optional.empty());
+
+        this.mockMvc.perform(
+                        MockMvcRequestBuilders.delete("/quotes/1")
+                                .accept("application/json")
+                                .with(user(username).password(password))
+                                .with(csrf())
+                )
+                .andExpect(status().isNotFound());
+    }
 
 }

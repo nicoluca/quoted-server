@@ -53,4 +53,15 @@ public class QuoteRestController {
         return savedQuote.map(ResponseEntity::ok).orElseGet(()
                 -> ResponseEntity.badRequest().build());
     }
+
+    @DeleteMapping(path = "/quotes/{quoteId}")
+    public ResponseEntity<Long> deleteQuote(@PathVariable long quoteId) {
+        logger.info("Received request to delete quote with id: " + quoteId);
+        Optional<Quote> quote = quoteRepository.findById(quoteId);
+        if (quote.isEmpty())
+            return ResponseEntity.notFound().build();
+
+        quoteRepository.delete(quote.get());
+        return ResponseEntity.ok(quoteId);
+    }
 }
