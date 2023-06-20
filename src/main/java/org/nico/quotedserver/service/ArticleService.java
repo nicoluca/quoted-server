@@ -1,7 +1,6 @@
 package org.nico.quotedserver.service;
 
 import org.nico.quotedserver.domain.Article;
-import org.nico.quotedserver.domain.Book;
 import org.nico.quotedserver.domain.Quote;
 import org.nico.quotedserver.repository.ArticleRepository;
 import org.nico.quotedserver.repository.QuoteRepository;
