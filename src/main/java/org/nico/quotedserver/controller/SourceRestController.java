@@ -1,9 +1,12 @@
-package org.nico.quotedserver.rest;
+package org.nico.quotedserver.controller;
 
+import org.nico.quotedserver.domain.Article;
 import org.nico.quotedserver.domain.Quote;
 import org.nico.quotedserver.domain.Source;
 import org.nico.quotedserver.repository.QuoteRepository;
 import org.nico.quotedserver.repository.SourceRepository;
+import org.nico.quotedserver.service.ArticleService;
+import org.nico.quotedserver.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,10 +20,16 @@ public class SourceRestController {
     private final SourceRepository sourceRepository;
     private final QuoteRepository quoteRepository;
 
+    private final ArticleService articleService;
+
+    private final BookService bookService;
+
     @Autowired
-    public SourceRestController(SourceRepository sourceRepository, QuoteRepository quoteRepository) {
+    public SourceRestController(SourceRepository sourceRepository, QuoteRepository quoteRepository, ArticleService articleService, BookService bookService) {
         this.sourceRepository = sourceRepository;
         this.quoteRepository = quoteRepository;
+        this.articleService = articleService;
+        this.bookService = bookService;
     }
 
     @GetMapping("/sources")
@@ -47,5 +56,21 @@ public class SourceRestController {
 
         Quote savedQuote = quoteRepository.save(quote);
         return ResponseEntity.ok(savedQuote);
+    }
+
+    @DeleteMapping("/sources/{sourceId}")
+    public ResponseEntity<Long> deleteSource(@PathVariable long sourceId) {
+        Optional<Source> source = sourceRepository.findById(sourceId);
+        if (source.isEmpty())
+            return ResponseEntity.notFound().build();
+
+        if (source.get() instanceof Article article)
+            articleService.delete(article);
+        else if (source.get() instanceof org.nico.quotedserver.domain.Book book)
+            bookService.delete(book);
+        else
+            return ResponseEntity.badRequest().build();
+
+        return ResponseEntity.ok(sourceId);
     }
 }

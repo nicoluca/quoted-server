@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestUtilTest {
+    // TODO Rename and merge with TestUtil
     public static int countIterable(Iterable<?> iterable) {
         AtomicInteger count = new AtomicInteger();
         iterable.forEach(i -> count.getAndIncrement());

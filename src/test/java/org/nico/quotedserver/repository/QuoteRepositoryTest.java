@@ -1,9 +1,6 @@
 package org.nico.quotedserver.repository;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.nico.quotedserver.domain.Article;
 import org.nico.quotedserver.domain.Author;
 import org.nico.quotedserver.domain.Book;
@@ -49,9 +46,9 @@ class QuoteRepositoryTest {
         Author author = new Author("Test", "Test");
         authorRepository.save(author);
         book = new Book("Test book", author);
-        bookRepository.save(book);
+        book = bookRepository.save(book);
         article = new Article("Test article", "Test article");
-        articleRepository.save(article);
+        article = articleRepository.save(article);
     }
 
     // delete all quotes from the database
@@ -193,5 +190,18 @@ class QuoteRepositoryTest {
         Quote quote2 = new Quote("Test quote", book);
         quote2 = quoteRepository.save(quote2);
         assertFalse(quoteRepository.findRandomQuote(quote2.getId()).isEmpty());
+    }
+
+    @Test
+    @Disabled("Cascade delete does not work for repositories. Services to be used instead for now.")
+    void testCascadingDeleteWhenDeletingSource() {
+        Quote quote = new Quote("Test quote", book);
+        quoteRepository.save(quote);
+
+        assertEquals(1, TestUtilTest.countIterable(bookRepository.findAll()));
+        assertEquals(1, TestUtilTest.countIterable(quoteRepository.findAll()));
+
+        bookRepository.delete(book);
+        assertEquals(0, TestUtilTest.countIterable(quoteRepository.findAll()));
     }
 }

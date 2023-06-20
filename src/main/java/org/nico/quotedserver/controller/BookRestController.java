@@ -1,4 +1,4 @@
-package org.nico.quotedserver.rest;
+package org.nico.quotedserver.controller;
 
 import org.nico.quotedserver.domain.Book;
 import org.nico.quotedserver.service.BookService;

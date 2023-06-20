@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.nico.quotedserver.repository.QuoteRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Set;
 
@@ -32,9 +34,11 @@ public abstract class Source {
     @GeneratedValue(strategy = GenerationType.TABLE)
     @JsonIgnoreProperties(ignoreUnknown = true) // If not available, ignore (used to retrieve article by url)
     private long id;
+
     @Column(name = "title")
     private String title;
-    @OneToMany(cascade = CascadeType.MERGE, mappedBy = "source")
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "source")
     @JsonIgnore // If not, infinite recursion
     private Set<Quote> quotes;
 
@@ -56,4 +60,5 @@ public abstract class Source {
     public String toString() {
         return this.getTitle() + " (" + this.originToString() + ")";
     }
+
 }

@@ -1,4 +1,4 @@
-package org.nico.quotedserver.rest;
+package org.nico.quotedserver.controller;
 
 import org.nico.quotedserver.domain.Quote;
 import org.nico.quotedserver.repository.QuoteRepository;

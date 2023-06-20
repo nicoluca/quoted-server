@@ -1,14 +1,18 @@
-package org.nico.quotedserver.rest;
+package org.nico.quotedserver.controller;
 
 import org.junit.jupiter.api.Test;
 import org.nico.quotedserver.TestUtil;
 import org.nico.quotedserver.domain.*;
 import org.nico.quotedserver.repository.QuoteRepository;
 import org.nico.quotedserver.repository.SourceRepository;
+import org.nico.quotedserver.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -19,13 +23,13 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(SourceRestController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
 class SourceRestControllerTest {
 
@@ -36,10 +40,13 @@ class SourceRestControllerTest {
     private String password;
 
     @MockBean
-    SourceRepository sourceRepository;
+    private SourceRepository sourceRepository;
 
     @MockBean
-    QuoteRepository quoteRepository;
+    private QuoteRepository quoteRepository;
+
+    @MockBean
+    private ArticleService articleService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -155,6 +162,24 @@ class SourceRestControllerTest {
                                 .content(TestUtil.resourceToString("/json/quote_without_source.json"))
                 )
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteSource() throws Exception {
+        Source source = new Article("Test Source", "test.de");
+        when(sourceRepository.findById(1L)).thenReturn(Optional.of(source));
+        doNothing().when(articleService).delete(any(Article.class));
+
+        this.mockMvc.perform(
+                        MockMvcRequestBuilders.delete("/sources/1")
+                                .with(user(username).password(password))
+                                .with(csrf())
+                                .accept("application/json")
+                )
+                .andExpect(status().isOk());
+
+        verify(sourceRepository).findById(1L);
+        verify(articleService).delete((Article) source);
     }
 
 }
