@@ -4,21 +4,26 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.nico.quotedserver.domain.Article;
 import org.nico.quotedserver.repository.ArticleRepository;
+import org.nico.quotedserver.repository.QuoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class ArticleServiceTest {
 
     @MockBean
     ArticleRepository articleRepository;
+
+    @MockBean
+    QuoteRepository quoteRepository;
 
     @Autowired
     ArticleService articleService;
@@ -47,5 +52,18 @@ class ArticleServiceTest {
 
         assertTrue(articleService.update(article).isPresent());
         assertEquals(article, articleService.update(article).get());
+    }
+
+    @Test
+    void testCascadeDeleteArticleWithQuotes() {
+        when(articleRepository.findById((any()))).thenReturn(Optional.of(article));
+        when(quoteRepository.findBySourceId(1L)).thenReturn(new ArrayList<>());
+        doNothing().when(quoteRepository).deleteAll(any());
+
+        articleService.delete(article);
+
+        verify(articleRepository).findById(any());
+        verify(quoteRepository).findBySourceId(1L);
+        verify(quoteRepository).deleteAll(any());
     }
 }

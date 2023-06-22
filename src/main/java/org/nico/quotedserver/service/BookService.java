@@ -62,6 +62,11 @@ public class BookService implements ServiceInterface<Book> {
 
         Author author = authorService.save(book.getAuthor());
 
+        // Delete old author if no books left
+        if (savedBook.getAuthor().getBooks().size() == 1) {
+            authorService.delete(savedBook.getAuthor());
+        }
+
         savedBook.setAuthor(author);
         savedBook = bookRepository.save(savedBook);
         logger.info("Saved book: " + savedBook);

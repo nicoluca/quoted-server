@@ -5,10 +5,7 @@ import org.nico.quotedserver.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -22,6 +19,15 @@ public class ArticleRestController {
     @Autowired
     public ArticleRestController(ArticleService articleService) {
         this.articleService = articleService;
+    }
+
+    @PostMapping(path = "/articles",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Article> newArticle(@RequestBody Article article) {
+        logger.info("Received new article: " + article);
+        Article savedArticle = articleService.save(article);
+        return ResponseEntity.ok(savedArticle);
     }
 
     @PutMapping(path = "/articles/{id}",

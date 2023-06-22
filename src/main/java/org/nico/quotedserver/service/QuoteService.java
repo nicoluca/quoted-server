@@ -21,7 +21,6 @@ public class QuoteService implements ServiceInterface<Quote> {
     private final QuoteRepository quoteRepository;
     private final BookRepository bookRepository;
     private final ArticleRepository articleRepository;
-    private static long lastQuoteId = 0L;
     private final Logger logger = Logger.getLogger(QuoteService.class.getName());
 
     @Autowired
@@ -29,22 +28,6 @@ public class QuoteService implements ServiceInterface<Quote> {
         this.quoteRepository = quoteRepository;
         this.bookRepository = bookRepository;
         this.articleRepository = articleRepository;
-    }
-
-    // TODO - random is likely not desirable, as we want to cycle through all quotes
-    public Quote randomQuote() {
-        // Retrieve a random quote from the database, different from the last one
-        long numberOfQuotes = quoteRepository.count();
-        Quote exceptionQuote = new Quote("No quotes in the database", Article.builder().title("No quotes in the database").build());
-
-        if (numberOfQuotes == 0)
-            return exceptionQuote;
-        else if (numberOfQuotes == 1)
-            return quoteRepository.findAll().iterator().next();
-
-        Quote quote = quoteRepository.findRandomQuote(lastQuoteId).orElse(exceptionQuote);
-        lastQuoteId = quote.getId();
-        return quote;
     }
 
     public Optional<Quote> save(Quote quote) {
@@ -77,7 +60,6 @@ public class QuoteService implements ServiceInterface<Quote> {
         article = articleRepository.save(article);
         return article;
     }
-
 
     public Optional<Quote> update(Quote quote) {
         Optional<Quote> optionalQuoteToUpdate= quoteRepository.findById(quote.getId());

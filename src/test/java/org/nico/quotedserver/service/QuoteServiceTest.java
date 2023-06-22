@@ -1,7 +1,6 @@
 package org.nico.quotedserver.service;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.nico.quotedserver.domain.Article;
 import org.nico.quotedserver.domain.Author;
@@ -47,27 +46,6 @@ class QuoteServiceTest {
         quote.setId(1L);
 
         quotes = List.of(quote);
-    }
-
-    @Test
-    void randomQuoteIfNoQuotesAvailable() {
-        when(quoteRepository.count()).thenReturn(0L);
-        assertEquals("No quotes in the database", quoteService.randomQuote().getText());
-    }
-
-    @RepeatedTest(3)
-    void randomQuoteIfOneQuoteAvailable() {
-        when(quoteRepository.count()).thenReturn(1L);
-        when(quoteRepository.findAll()).thenReturn(quotes);
-        assertEquals(quoteService.randomQuote().getText(), quote.getText());
-    }
-
-    @RepeatedTest(3)
-    void randomQuoteIfMultipleQuotesAvailable() {
-        when(quoteRepository.count()).thenReturn(2L);
-        when(quoteRepository.findRandomQuote(0L)).thenReturn(Optional.ofNullable(quote));
-        when(quoteRepository.findRandomQuote(1L)).thenReturn(Optional.ofNullable(quote));
-        assertEquals(quoteService.randomQuote().getText(), quote.getText());
     }
 
     @Test

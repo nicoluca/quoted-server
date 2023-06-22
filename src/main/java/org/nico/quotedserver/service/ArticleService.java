@@ -25,6 +25,12 @@ public class ArticleService implements ServiceInterface<Article> {
         this.quoteRepository = quoteRepository;
     }
 
+    public Article save(Article article) {
+        Article savedArticle = articleRepository.save(article);
+        logger.info("Saved article: " + savedArticle);
+        return savedArticle;
+    }
+
     public Optional<Article> update(Article article) {
         Optional<Article> optionalArticle = articleRepository.findById(article.getId());
 

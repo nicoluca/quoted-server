@@ -181,18 +181,6 @@ class QuoteRepositoryTest {
     }
 
     @Test
-    void findRandomQuote() {
-        assertTrue(quoteRepository.findRandomQuote(0L).isEmpty());
-        Quote quote = new Quote("Test quote", book);
-        quote = quoteRepository.save(quote);
-        assertTrue(quoteRepository.findRandomQuote(quote.getId()).isEmpty());
-        assertFalse(quoteRepository.findRandomQuote(0L).isEmpty());
-        Quote quote2 = new Quote("Test quote", book);
-        quote2 = quoteRepository.save(quote2);
-        assertFalse(quoteRepository.findRandomQuote(quote2.getId()).isEmpty());
-    }
-
-    @Test
     @Disabled("Cascade delete does not work for repositories. Services to be used instead for now.")
     void testCascadingDeleteWhenDeletingSource() {
         Quote quote = new Quote("Test quote", book);

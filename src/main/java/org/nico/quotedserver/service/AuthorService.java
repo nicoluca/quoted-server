@@ -29,4 +29,8 @@ public class AuthorService implements ServiceInterface<Author> {
             return Optional.empty();
         return Optional.of(authorRepository.save(author));
     }
+
+    public void delete(Author author) {
+        authorRepository.delete(author);
+    }
 }

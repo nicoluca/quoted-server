@@ -31,12 +31,6 @@ public class QuoteRestController {
         return (List<Quote>) quoteRepository.findAll();
     }
 
-    @GetMapping("/quotes/random")
-    public Quote randomQuote() {
-        // Retrieve a random quote from the database, different from the last one
-        return quoteService.randomQuote();
-    }
-
     @GetMapping("/quotes/search")
     public List<Quote> quotesByString(@RequestParam(name = "string") String searchString) {
         return quoteRepository.findByTextContaining(searchString);

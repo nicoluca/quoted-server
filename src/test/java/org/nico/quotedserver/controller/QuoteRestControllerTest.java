@@ -92,25 +92,6 @@ class QuoteRestControllerTest {
     }
 
     @Test
-    void getRandomQuote() throws Exception {
-        when(quoteService.randomQuote()).thenReturn(quote);
-
-        this.mockMvc.perform(
-                        MockMvcRequestBuilders.get("/quotes/random")
-                                .accept("application/json")
-                                .with(user(username).password(password))
-                )
-                .andExpect(status().isOk())
-                .andExpect(result -> {
-                    String contentString = result.getResponse().getContentAsString();
-                    assertTrue(contentString.contains("test.de"));
-                    assertTrue(contentString.contains("Test quote"));
-                });
-
-        verify(quoteService).randomQuote();
-    }
-
-    @Test
     void getQuotesByString() throws Exception {
         when(quoteRepository.findByTextContaining("test")).thenReturn(quotes);
 

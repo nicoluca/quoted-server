@@ -13,4 +13,5 @@ public interface AuthorRepository extends CrudRepository<Author, Long> {
             "WHERE UPPER(a.firstName) LIKE CONCAT('%', UPPER(?1), '%') " +
             "AND UPPER(a.lastName) LIKE CONCAT('%', UPPER(?2), '%')")
     Optional<Author> findByName(String firstName, String lastName);
+
 }
