@@ -17,13 +17,12 @@ public class AuthConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-
         http.authorizeHttpRequests((auth) -> auth
                         .anyRequest().authenticated()
                 )
                 .httpBasic(withDefaults());
 
-        // CSRF in general not required for stateless REST APIs that use POST, PUT, DELETE and/or PATCH
+        // CSRF not required for stateless REST APIs that use POST, PUT, DELETE and/or PATCH
         if (!csrfEnabled)
             http.csrf().disable();
 

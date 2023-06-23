@@ -1,1 +1,34 @@
-# TODO
+# Custom properties
+custom.config.expose-id=true
+
+# Logging
+logging.level.root=info
+logging.level.org.springframework = warn
+logging.level.org.hibernate= warn
+# logging.level.org.hibernate.SQL=warn
+
+# Database
+spring.datasource.url=jdbc:postgresql://localhost:5432/quote_db_server
+spring.datasource.username=USERNAME
+spring.datasource.password=PASSWORD
+spring.jpa.hibernate.ddl-auto=validate
+
+# Security
+spring.security.user.name=USERNAME
+spring.security.user.password=PASSWORD
+
+# Spring Data Rest
+server.servlet.context-path=/api
+
+# Actuator
+management.endpoints.web.exposure.include=health
+# management.endpoint.info.enabled=true
+
+# Devtools
+spring.devtools.livereload.enabled=true
+
+# Disable CSRF
+security.enable-csrf=false
+
+# Jackson
+spring.jackson.default-property-inclusion=non_null

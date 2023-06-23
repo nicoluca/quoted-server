@@ -10,6 +10,6 @@ import java.util.Optional;
 @Repository
 public interface ArticleRepository extends CrudRepository<Article, Long> {
     @Query("SELECT a FROM Article a " +
-            "WHERE UPPER(a.url) LIKE CONCAT('%', UPPER(?1), '%')") // TODO extract hardcoded SQL and check if Spring does not offer it built-in
+            "WHERE UPPER(a.url) LIKE CONCAT('%', UPPER(?1), '%')")
     Optional<Article> findByUrl(String url);
 }
