@@ -22,7 +22,9 @@ Please refer to the [Client-side User Manual](https://github.com/nicoluca/quoted
 - Spring Security
 - Spring Data JPA
 - Spring DevTools
+- Lombok
 - PostgreSQL
+- (Spring Boot Test)
 
 ## Setup
 1. Setup a local postgresql server. On MacOS, you can e.g. do that using [Homebrew](https://brew.sh) with the commands `brew install postgresql` and then `brew services start postgresql@14`. (Default user will be your local user name without a password.) See [here](https://www.postgresql.org/download/) for examples on how to do that on other platforms.
