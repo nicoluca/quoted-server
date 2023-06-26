@@ -10,7 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -42,20 +42,5 @@ class AuthorServiceTest {
         when(authorRepository.findByName(any(), any())).thenReturn(Optional.empty());
         when(authorRepository.save(any())).thenReturn(author);
         assertEquals(author, authorService.save(author));
-    }
-
-    @Test
-    void updateExistingAuthor() {
-        when(authorRepository.findById(any())).thenReturn(Optional.ofNullable(author));
-        when(authorRepository.save(any())).thenReturn(author);
-
-        assertTrue(authorService.update(author).isPresent());
-        assertEquals(author, authorService.update(author).get());
-    }
-
-    @Test
-    void updateNonExistingAuthor() {
-        when(authorRepository.findById(any())).thenReturn(Optional.empty());
-        assertFalse(authorService.update(author).isPresent());
     }
 }

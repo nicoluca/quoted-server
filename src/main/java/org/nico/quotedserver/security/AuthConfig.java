@@ -22,7 +22,7 @@ public class AuthConfig {
                 )
                 .httpBasic(withDefaults());
 
-        // CSRF not required for stateless REST APIs that use POST, PUT, DELETE and/or PATCH
+        // CSRF not required for stateless REST APIs
         if (!csrfEnabled)
             http.csrf().disable();
 

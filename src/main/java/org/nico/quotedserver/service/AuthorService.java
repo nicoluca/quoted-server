@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class AuthorService implements ServiceInterface<Author> {
+public class AuthorService implements Save<Author>, Delete<Author> {
 
     private final AuthorRepository authorRepository;
 
@@ -21,13 +21,6 @@ public class AuthorService implements ServiceInterface<Author> {
         Optional<Author> savedAuthor
                 = authorRepository.findByName(author.getFirstName(), author.getLastName());
         return savedAuthor.orElseGet(() -> authorRepository.save(author));
-    }
-
-    @Override // TODO Unused method, refactor all to 'save'?
-    public Optional<Author> update(Author author) {
-        if (authorRepository.findById(author.getId()).isEmpty())
-            return Optional.empty();
-        return Optional.of(authorRepository.save(author));
     }
 
     public void delete(Author author) {

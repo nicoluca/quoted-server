@@ -110,4 +110,15 @@ class AuthorRepositoryTest {
         Optional<Author> authorOptional3 = authorRepository.findByName("Neil", "NotPresent");
         assertTrue(authorOptional3.isEmpty());
     }
+
+    @Test
+    @DisplayName("Delete authors with no books")
+    void deleteAuthorWithNoBooks() {
+        Author author = new Author("Neil", "Stephenson");
+        authorRepository.save(author);
+
+        authorRepository.deleteAuthorsWithNoBooks();
+
+        assertEquals(0, TestUtilTest.countIterable(authorRepository.findAll()));
+    }
 }

@@ -19,7 +19,7 @@ import java.util.Set;
 
 // JPA annotations
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED) // JOINED to to have a dedicated source table, TABLE_PER_CLASS to have a table per subclass
+@Inheritance(strategy = InheritanceType.JOINED) // JOINED to have a dedicated source table, TABLE_PER_CLASS to have a table per subclass
 @DiscriminatorColumn(name="type")
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", visible = true)
 @JsonSubTypes({

@@ -113,29 +113,6 @@ class QuoteRestControllerTest {
 
     @Test
     @Disabled("Moved functionality to source rest controller, can be deleted once finalised.")
-    void postValidQuote() throws Exception {
-        when(quoteService.save(any(Quote.class))).thenReturn(Optional.ofNullable(quote));
-
-        this.mockMvc.perform(
-                        MockMvcRequestBuilders.post("/quotes")
-                                .accept("application/json")
-                                .with(user(username).password(password))
-                                .with(csrf())
-                                .contentType("application/json")
-                                .content(TestUtil.resourceToString("/json/quote.json"))
-                )
-                .andExpect(status().isOk())
-                .andExpect(result -> {
-                    String contentString = result.getResponse().getContentAsString();
-                    assertTrue(contentString.contains("test.de"));
-                    assertTrue(contentString.contains("Test quote"));
-                });
-
-        verify(quoteService).save(any(Quote.class));
-    }
-
-    @Test
-    @Disabled("Moved functionality to source rest controller, can be deleted once finalised.")
     void postInvalidQuote() throws Exception {
         this.mockMvc.perform(
                         MockMvcRequestBuilders.post("/quotes")

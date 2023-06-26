@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 @Service
-public class ArticleService implements ServiceInterface<Article> {
+public class ArticleService implements Save<Article>, Update<Article>, Delete<Article> {
 
     private final ArticleRepository articleRepository;
 
@@ -48,14 +48,19 @@ public class ArticleService implements ServiceInterface<Article> {
     }
 
     public void delete(Article article) {
+        logger.info("Looking for: " + article);
         Optional<Article> optionalArticle = articleRepository.findById(article.getId());
 
         if (optionalArticle.isEmpty())
             return;
 
+        logger.info("Found: " + optionalArticle.get());
+
+        logger.info("Deleting quotes for article: " + article);
         List<Quote> quotes = quoteRepository.findBySourceId(article.getId());
         quoteRepository.deleteAll(quotes);
 
+        logger.info("Deleting article: " + article);
         articleRepository.delete(article);
     }
 }

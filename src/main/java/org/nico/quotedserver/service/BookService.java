@@ -14,7 +14,7 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 @Service
-public class BookService implements ServiceInterface<Book> {
+public class BookService implements Save<Book>, Update<Book>, Delete<Book> {
 
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
@@ -60,28 +60,33 @@ public class BookService implements ServiceInterface<Book> {
         savedBook.setIsbn(book.getIsbn());
         savedBook.setCoverPath(book.getCoverPath());
 
+        logger.info("Saving author: " + book.getAuthor());
         Author author = authorService.save(book.getAuthor());
 
-        // Delete old author if no books left
-        if (savedBook.getAuthor().getBooks().size() == 1) {
-            authorService.delete(savedBook.getAuthor());
-        }
+        logger.info("Deleting authors with no books");
+        authorRepository.deleteAuthorsWithNoBooks();
 
         savedBook.setAuthor(author);
         savedBook = bookRepository.save(savedBook);
+
         logger.info("Saved book: " + savedBook);
         return Optional.of(savedBook);
     }
 
     public void delete(Book book) {
+        logger.info("Looking for: " + book);
         Optional<Book> optionalBook = bookRepository.findById(book.getId());
 
         if (optionalBook.isEmpty())
             return;
 
+        logger.info("Found: " + optionalBook.get());
+
+        logger.info("Deleting quotes from book: " + book);
         List<Quote> quotes = quoteRepository.findBySourceId(book.getId());
         quoteRepository.deleteAll(quotes);
 
+        logger.info("Deleting book: " + book);
         bookRepository.delete(book);
     }
 }

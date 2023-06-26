@@ -3,31 +3,29 @@ package org.nico.quotedserver.domain;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @NoArgsConstructor // Needed for JPA
 @Getter @Setter
+
 @Entity
 @DiscriminatorValue("book")
 public class Book extends Source {
 
-    @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER) // TODO Changed from CascadeType.ALL to CascadeType.REMOVE
+    @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id")
     @Nonnull
     @JsonIncludeProperties({"firstName", "lastName"})
     private Author author;
 
     @Column(name = "coverpath")
-    private String coverPath; // TODO Currently unused, intention to be used in future export to MD feature
+    private String coverPath;
 
     @Column(name = "isbn")
-    private String isbn; // TODO Currently unused, intention to be used in future export to MD feature
+    private String isbn; // TODO Currently unused, intention to be used in future feature
 
     @Builder
-    public Book(String title, Author author) {
+    public Book(String title, @NonNull Author author) {
         super(title);
         this.author = author;
     }

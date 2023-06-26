@@ -29,7 +29,6 @@ public class Quote {
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "source_id")
-    //@JsonIncludeProperties({"id", "type", "title"})
     private Source source;
 
     @Builder

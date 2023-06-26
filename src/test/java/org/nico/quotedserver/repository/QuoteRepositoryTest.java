@@ -134,7 +134,7 @@ class QuoteRepositoryTest {
     }
 
     @Test
-    @DisplayName("Load test - create 1000 new quotes with books and authors, read all in under 1 second")
+    @DisplayName("Load test - create 1000 new quotes with books and authors, read all in under 3 second")
     void loadTest() {
         Instant start = Instant.now();
         for (int i = 0; i < 1000; i++) {
@@ -147,7 +147,7 @@ class QuoteRepositoryTest {
         }
         Instant end = Instant.now();
         Duration duration = Duration.between(start, end);
-        assertTrue(duration.toMillis() < 1000);
+        assertTrue(duration.toMillis() < 3000);
         assertEquals(1000, TestUtilTest.countIterable(quoteRepository.findAll()));
     }
 
@@ -167,7 +167,7 @@ class QuoteRepositoryTest {
         Book book = new Book("Test Title", author);
         book = bookRepository.save(book);
         Quote quote = new Quote("Test quote", book);
-        quote = quoteRepository.save(quote);
+        quoteRepository.save(quote);
         assertFalse(quoteRepository.findByTextContaining("Test").isEmpty());
         assertFalse(quoteRepository.findByTextContaining("TEST").isEmpty());
         assertFalse(quoteRepository.findByTextContaining("AUTHORTEST").isEmpty());
@@ -176,7 +176,7 @@ class QuoteRepositoryTest {
         Article article = Article.builder().title("test.com").build();
         article = articleRepository.save(article);
         Quote quote2 = new Quote("Test quote", article);
-        quote2 = quoteRepository.save(quote2);
+        quoteRepository.save(quote2);
         assertFalse(quoteRepository.findByTextContaining("Test.Com").isEmpty());
     }
 

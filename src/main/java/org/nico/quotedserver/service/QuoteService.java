@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 @Service
-public class QuoteService implements ServiceInterface<Quote> {
+public class QuoteService implements Update<Quote>{
 
     private final QuoteRepository quoteRepository;
     private final BookRepository bookRepository;
@@ -28,23 +28,6 @@ public class QuoteService implements ServiceInterface<Quote> {
         this.quoteRepository = quoteRepository;
         this.bookRepository = bookRepository;
         this.articleRepository = articleRepository;
-    }
-
-    public Optional<Quote> save(Quote quote) {
-        Source source = quote.getSource();
-        if (source instanceof Article) {
-            Article article = resolveArticle(source);
-            quote.setSource(article);
-            logger.info("Article found and timestamp updated: " + article);
-        } else if (source instanceof Book && bookRepository.findById(source.getId()).isPresent()) {
-            org.nico.quotedserver.domain.Book book = bookRepository.findById(source.getId()).get();
-            quote.setSource(book);
-            logger.info("Book found: " + book);
-        } else
-            return Optional.empty();
-
-        Quote savedQuote = quoteRepository.save(quote);
-        return Optional.of(savedQuote);
     }
 
     private Article resolveArticle(Source source) {
@@ -62,9 +45,12 @@ public class QuoteService implements ServiceInterface<Quote> {
     }
 
     public Optional<Quote> update(Quote quote) {
+        logger.info("Looking for: " + quote);
         Optional<Quote> optionalQuoteToUpdate= quoteRepository.findById(quote.getId());
         if (optionalQuoteToUpdate.isEmpty())
             return Optional.empty();
+
+        logger.info("Quote found: " + optionalQuoteToUpdate.get());
         Quote quoteToUpdate = optionalQuoteToUpdate.get();
 
         quoteToUpdate.setText(quote.getText());
@@ -81,7 +67,9 @@ public class QuoteService implements ServiceInterface<Quote> {
             logger.info("Book found: " + book);
         } else
             return Optional.empty();
+
         Quote savedQuote = quoteRepository.save(quoteToUpdate);
+        logger.info("Quote updated: " + quoteToUpdate);
         return Optional.of(savedQuote);
     }
 }

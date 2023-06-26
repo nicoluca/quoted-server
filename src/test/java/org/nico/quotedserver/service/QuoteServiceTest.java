@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,7 +35,6 @@ class QuoteServiceTest {
     ArticleRepository articleRepository;
 
     private Quote quote;
-    private List<Quote> quotes;
 
     @BeforeEach
     void setUp() {
@@ -44,84 +42,6 @@ class QuoteServiceTest {
                 .text("Test quote")
                 .build();
         quote.setId(1L);
-
-        quotes = List.of(quote);
-    }
-
-    @Test
-    void saveQuoteWithNoSource() {
-        quote.setSource(null);
-        assertFalse(quoteService.save(quote).isPresent());
-    }
-
-    @Test
-    void saveQuoteWithExistingArticleId() {
-        Article article = Article.builder()
-                .title("Test article")
-                .url("https://www.test.com")
-                .build();
-        article.setId(1L);
-        quote.setSource(article);
-
-        when(articleRepository.findById(any())).thenReturn(Optional.of(article));
-        when(articleRepository.save(any())).thenReturn(article);
-        when(quoteRepository.save(any())).thenReturn(quote);
-
-        assertTrue(quoteService.save(quote).isPresent());
-        assertEquals(quote, quoteService.save(quote).get());
-    }
-
-    @Test
-    void saveQuoteWithExistingArticleUrl() {
-        Article article = Article.builder()
-                .title("Test article")
-                .url("https://www.test.com")
-                .build();
-        article.setId(1L);
-        quote.setSource(article);
-
-        when(articleRepository.findById(any())).thenReturn(Optional.empty());
-        when(articleRepository.findByUrl(any())).thenReturn(Optional.of(article));
-        when(articleRepository.save(any())).thenReturn(article);
-        when(quoteRepository.save(any())).thenReturn(quote);
-
-        assertTrue(quoteService.save(quote).isPresent());
-        assertEquals(quote, quoteService.save(quote).get());
-    }
-
-    @Test
-    void saveQuoteWithNewArticle() {
-        Article article = Article.builder()
-                .title("Test article")
-                .url("https://www.test.com")
-                .build();
-        article.setId(1L);
-        quote.setSource(article);
-
-        when(articleRepository.findById(any())).thenReturn(Optional.empty());
-        when(articleRepository.findByUrl(any())).thenReturn(Optional.empty());
-        when(articleRepository.save(any())).thenReturn(article);
-        when(quoteRepository.save(any())).thenReturn(quote);
-
-        assertTrue(quoteService.save(quote).isPresent());
-        assertEquals(quote, quoteService.save(quote).get());
-    }
-
-    @Test
-    void saveQuoteWithExistingBook() {
-        Book book = Book.builder()
-                .title("Test book")
-                .author(new Author("Firstname", "Lastname"))
-                .build();
-        book.setId(1L);
-        quote.setSource(book);
-
-        when(bookRepository.findById(any())).thenReturn(Optional.of(book));
-        when(bookRepository.save(any())).thenReturn(book);
-        when(quoteRepository.save(any())).thenReturn(quote);
-
-        assertTrue(quoteService.save(quote).isPresent());
-        assertEquals(quote, quoteService.save(quote).get());
     }
 
     @Test
